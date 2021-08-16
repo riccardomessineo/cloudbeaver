@@ -7,7 +7,6 @@
  */
 
 import { observer } from 'mobx-react-lite';
-import { useLayoutEffect, useRef, useState } from 'react';
 import styled, { css } from 'reshadow';
 
 import { Button, useClipboard } from '@cloudbeaver/core-blocks';
@@ -55,27 +54,6 @@ export const ScriptPreviewDialog: React.FC<DialogComponentProps<Payload>> = obse
   const translate = useTranslate();
   const copy = useClipboard();
 
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [editorRef, setEditorRef] = useState<CodeMirror.Editor | null>(null);
-
-  // Dirty. We need to run Editor.refresh when we are sure that Editor is mounted and takes as much space as it needs
-  useLayoutEffect(() => {
-    const observable = wrapperRef.current;
-    if (!editorRef || !observable) {
-      return;
-    }
-
-    const refresh = () => {
-      editorRef.refresh();
-    };
-
-    const observer = new ResizeObserver(refresh);
-
-    observer.observe(observable);
-
-    return () => observer.unobserve(observable);
-  }, [editorRef]);
-
   return styled(styles)(
     <CommonDialogWrapper
       title={translate('data_viewer_script_preview_dialog_title')}
@@ -89,11 +67,10 @@ export const ScriptPreviewDialog: React.FC<DialogComponentProps<Payload>> = obse
       )}
       onReject={rejectDialog}
     >
-      <wrapper ref={wrapperRef} as='div'>
+      <wrapper>
         <SQLCodeEditorLoader
           bindings={{
             autoCursor: false,
-            editorDidMount: setEditorRef,
             options: {
               lineWrapping: false,
             },
