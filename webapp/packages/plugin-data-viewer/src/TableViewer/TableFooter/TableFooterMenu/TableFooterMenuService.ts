@@ -99,7 +99,7 @@ export class TableFooterMenuService {
       order: 3,
       title: 'data_viewer_script_preview',
       tooltip: 'data_viewer_script_preview',
-      icon: 'sql-script',
+      icon: 'sql-script-preview',
       onClick: async context => {
         await this.scriptPreviewService.open(context.data.model, context.data.resultIndex);
       },
